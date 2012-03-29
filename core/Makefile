@@ -830,6 +830,12 @@ systemimage-nodeps snod: $(filter-out systemimage-nodeps snod,$(MAKECMDGOALS)) \
 	$(call build-systemimage-target,$(INSTALLED_SYSTEMIMAGE))
 	$(hide) $(call assert-max-image-size,$(INSTALLED_SYSTEMIMAGE),$(BOARD_SYSTEMIMAGE_PARTITION_SIZE),yaffs)
 
+ifneq (,$(filter systemimage-nodeps snod, $(MAKECMDGOALS)))
+ifeq (true,$(WITH_DEXPREOPT))
+$(warning Warning: with dexpreopt enabled, you may need a full rebuild.)
+endif
+endif
+
 #######
 ## system tarball
 define build-systemtarball-target
@@ -1432,6 +1438,7 @@ $(INTERNAL_SDK_TARGET): $(deps)
 			-I $(TARGET_COMMON_OUT_ROOT) \
 			-v "PLATFORM_NAME=android-$(PLATFORM_VERSION)" \
 			-v "OUT_DIR=$(OUT_DIR)" \
+			-v "HOST_OUT=$(HOST_OUT)" \
 			-v "TARGET_ARCH=$(TARGET_ARCH)" \
 			-v "TARGET_CPU_ABI=$(TARGET_CPU_ABI)" \
 			-v "DLL_EXTENSION=$(HOST_SHLIB_SUFFIX)" \
